@@ -137,4 +137,6 @@ if __name__ == "__main__":
 	strText = C_Mail_Body_End(strText)
 	strText = C_Mail_Html_End(strText)
 	
-	L_SendMail("自测邮件", strText)
+	objMailInfo = CMailInfo()
+	L_ReadMailConf("./mail.conf", objMailInfo)
+	L_SendMail(objProcessList, "自测邮件", strText)

@@ -9,11 +9,6 @@ from check_conf import *
 
 #发送邮件
 def L_SendMail_SSL(objMailInfo, strTitle, strText):
-	#mail_to   = "shiqianga@si-tech.com.cn" 
-	#mail_host = "smtp.qq.com"  #设置服务器
-	#mail_user = "41198969"    #用户名
-	#mail_pass = "dwghwgzkdrwdbgjg"   #口令 
-
 	#msg = MIMEText(strText, _subtype='plain', _charset='gb2312')  
 	msg = MIMEText(strText, _subtype='html', _charset='gb2312')  
 	msg['Subject'] = strTitle 
@@ -39,22 +34,22 @@ def L_SendMail_SSL(objMailInfo, strTitle, strText):
 def L_SendMail(objMailInfo, strTitle, strText):
 	#msg = MIMEText(strText, _subtype='plain', _charset='gb2312')  
 	msg = MIMEText(strText, _subtype='html', _charset='gb2312')  
-	msg['Subject'] = strTitle 
+	msg['Subject'] = strTitle
 	msg['From']    = objMailInfo.m_strMailFrom
 	msg['To']      = objMailInfo.m_strMailTo
 	
 	try:  
-		print objMailInfo.m_strMailHost + ":" + str(objMailInfo.m_nMailPort)
-		server = smtplib.SMTP(objMailInfo.m_strMailHost)  
+		#print objMailInfo.m_strMailHost + ":" + str(objMailInfo.m_nMailPort)
+		server = smtplib.SMTP(objMailInfo.m_strMailHost, objMailInfo.m_nMailPort)  
 
 		server.set_debuglevel(1)
-		server.ehlo("chandao@teamshub.com")
+		server.ehlo()
 		#server.starttls()
-		print objMailInfo.m_strUser + ":" + objMailInfo.m_strPass
+		#print objMailInfo.m_strUser + ":" + objMailInfo.m_strPass
 		#server.login(objMailInfo.m_strUser, objMailInfo.m_strPass)
 		server.esmtp_features["auth"] = "LOGIN"
-		server.login("chandao@teamshub.com", "404104")
-		print objMailInfo.m_strMailFrom + ":" + objMailInfo.m_strMailTo
+		server.login(objMailInfo.m_strUser, objMailInfo.m_strPass)
+		#print objMailInfo.m_strMailFrom + ":" + objMailInfo.m_strMailTo
 		server.sendmail(objMailInfo.m_strMailFrom, objMailInfo.m_strMailTo, msg.as_string())
 		
 		server.close()  
@@ -128,10 +123,12 @@ def C_Mail_TD_WIDTH(strText, nColspan, strClass, strContent, nWidth):
 	else:
 		strText = strText + "<td width='" + str(nWidth) + "%' class='" + strClass + "'>" + strContent + "</td>"
 	return strText	
-				
+			
+'''			
 #测试代码		
 if __name__ == "__main__":
 	objMailInfo = CMailInfo()
 	L_ReadMailConf("./mail.conf", objMailInfo)
 	
 	L_SendMail(objMailInfo, "自测邮件", "Test")		
+'''
