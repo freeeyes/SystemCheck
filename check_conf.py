@@ -123,7 +123,71 @@ def L_ReadSysConf(strFileName, objSysInfo):
 			objSysInfo.m_nCpu = int(strdata[1].strip())
 		elif(strTemp == "FreeMemory"):
 			objSysInfo.m_nFreeMemory = int(strdata[1].strip())
-		line = f.readline()  
+		line = f.readline()
+		
+#数据库配置文件
+class COracleDBInfo:
+	def __init__(self):
+		self.m_strUserName = ""
+		self.m_strPassword = ""
+		self.m_strHostIP   = ""
+		self.m_strPort     = ""
+		self.m_strsid      = ""
+		
+#读取数据库配置文件
+def L_ReadSysConf(strFileName, objDBInfo):
+	f = open(strFileName)
+	line = f.readline() 
+	while line:
+		strdata = line.split('=')
+		strTemp  = strdata[0].strip()
+		
+		#print("strTemp=%s,value=%s" %(strTemp, strdata[1]))
+		if(strTemp == "USERNAME"):
+			objDBInfo.m_strUserName = strdata[1].strip()
+		elif(strTemp == "USERPASS"):
+			objDBInfo.m_strPassword = strdata[1].strip()
+		elif(strTemp == "HOSTIP"):
+			objDBInfo.m_strHostIP   = strdata[1].strip()
+		elif(strTemp == "PORT"):
+			objDBInfo.m_strPort     = strdata[1].strip()	
+		elif(strTemp == "SID"):
+			objDBInfo.m_strsid      = strdata[1].strip()				
+		line = f.readline()
+		
+#邮件服务器配置信息
+class CMailInfo:
+	def __init__(self):
+		self.m_strMailTo   = ""
+		self.m_strMailFrom = ""
+		self.m_strMailHost = ""
+		self.m_nMailPort   = 0
+		self.m_strUser     = ""
+		self.m_strPass     = ""
+		
+def L_ReadMailConf(strFileName, objMailInfo):	
+	f = open(strFileName)
+	line = f.readline() 
+	while line:
+		strdata = line.split('=')
+		strTemp  = strdata[0].strip()
+		
+		#print("strTemp=%s,value=%s" %(strTemp, strdata[1]))
+		if(strTemp == "MAILTO"):
+			objMailInfo.m_strMailTo   = strdata[1].strip()
+		elif(strTemp == "MAILFROM"):
+			objMailInfo.m_strMailFrom = strdata[1].strip()
+		elif(strTemp == "MAILHOST"):
+			objMailInfo.m_strMailHost = strdata[1].strip()
+		elif(strTemp == "PORT"):
+			objMailInfo.m_nMailPort   = int(strdata[1].strip())	
+		elif(strTemp == "USER"):
+			objMailInfo.m_strUser     = strdata[1].strip()	
+		elif(strTemp == "PASS"):
+			objMailInfo.m_strPass     = strdata[1].strip()					
+		line = f.readline()
+
+
 '''	
 #测试代码	
 if __name__ == "__main__": 

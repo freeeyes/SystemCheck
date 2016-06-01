@@ -2,15 +2,9 @@
 # -*- coding: utf-8 -*- 
 import os, sys, string
 import cx_Oracle as orcl
+from check_conf import * 
 
 #add by freeeyes
-class COracleDBInfo:
-	def __init__(self):
-		self.m_strUserName = ""
-		self.m_strPassword = ""
-		self.m_strHostIP   = ""
-		self.m_strPort     = ""
-		self.m_strsid      = ""
 
 #查询当前在线信息
 def L_Oracle_Online_Info(objOracleDBInfo):
@@ -108,8 +102,7 @@ def L_Oracle_DeadLock_Info(objOracleDBInfo):
 		#print("Total: " + str(cursor.rowcount))
 
 		for row in result:
-			strDeadLockText = str(row[0])
-			break		
+			strDeadLockText = strDeadLockText + "<p>" + str(row[0])	+ "</p>"	
 		
 		cursor.close()
 		con.close()
@@ -196,7 +189,7 @@ def L_Oracle_ClientConnect_Info(objOracleDBInfo):
 		#print("Total: " + str(cursor.rowcount))
 
 		for row in result:
-			strConnectText = "当前进程连接数 :" + str(row[0])
+			strConnectText = "当前进程连接数:" + str(row[0])
 		
 		cursor.close()
 		con.close()
@@ -206,6 +199,7 @@ def L_Oracle_ClientConnect_Info(objOracleDBInfo):
 	except Exception,e:
 		return ""
 
+'''		
 #测试代码
 if __name__ == "__main__": 
 	objOracleDBInfo = COracleDBInfo()
@@ -221,4 +215,4 @@ if __name__ == "__main__":
 	L_Oracle_TableUsed_Info(objOracleDBInfo)
 	L_Oracle_User_Info(objOracleDBInfo)
 	L_Oracle_ClientConnect_Info(objOracleDBInfo)
-	
+'''	

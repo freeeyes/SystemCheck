@@ -7,6 +7,7 @@ from check_CPU import *
 from check_memory import *
 from check_disk import *
 from check_logfile import *
+from check_oracle import *
 from Send_mail import *
 
 #add by freeeyes
@@ -92,7 +93,45 @@ if __name__ == "__main__":
 			strText = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
 			strText = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
 			strText = C_Mail_TD(strText, 0, "content", "日志在指定时间内没有更新(" + str(objInfo.m_nTimeInterval) + ")")
-			strText = C_Mail_TR_End(strText)			
+			strText = C_Mail_TR_End(strText)
+
+	#检测数据库
+	strText = C_Mail_TD(strText, 2, "title", "(新疆接口机1)数据库检测")
+	strText = C_Mail_TR_End(strText)
+	objOracleDBInfo = COracleDBInfo()
+	L_ReadSysConf("./DB.conf", objOracleDBInfo)
+	
+	strDBText = L_Oracle_Online_Info(objOracleDBInfo)
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
+	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+	strText = C_Mail_TR_End(strText)
+	strDBText = L_Oracle_DeadLock_Info(objOracleDBInfo)
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
+	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+	strText = C_Mail_TR_End(strText)
+	strDBTextList = L_Oracle_TableUsed_Info(objOracleDBInfo)
+	strDBText = ""
+	for strTemp in strDBTextList:
+		strDBText = strDBText + "<p>" + strTemp + "</p>"
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间", 20)
+	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+	strText = C_Mail_TR_End(strText)
+	strDBTextList = L_Oracle_User_Info(objOracleDBInfo)
+	strDBText = ""
+	for strTemp in strDBTextList:
+		strDBText = strDBText + "<p>" + strTemp + "</p>"
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库用户", 20)
+	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)	
+	strText = C_Mail_TR_End(strText)
+	strDBText = L_Oracle_ClientConnect_Info(objOracleDBInfo)
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数", 20)
+	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+	strText = C_Mail_TR_End(strText)
 	
 	strText = C_Mail_Table_End(strText)
 	strText = C_Mail_Body_End(strText)
