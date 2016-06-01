@@ -52,6 +52,7 @@ def L_SendMail(objMailInfo, strTitle, strText):
 		#server.starttls()
 		print objMailInfo.m_strUser + ":" + objMailInfo.m_strPass
 		#server.login(objMailInfo.m_strUser, objMailInfo.m_strPass)
+		server.esmtp_features["auth"] = "LOGIN"
 		server.login("chandao@teamshub.com", "404104")
 		print objMailInfo.m_strMailFrom + ":" + objMailInfo.m_strMailTo
 		server.sendmail(objMailInfo.m_strMailFrom, objMailInfo.m_strMailTo, msg.as_string())
