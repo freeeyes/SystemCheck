@@ -19,11 +19,11 @@ if __name__ == "__main__":
 	strText = C_Mail_Body_Begin(strText)
 	strText = C_Mail_Table_Begin(strText)
 	strText = C_Mail_TR_Begin(strText)
-	strText = C_Mail_TD(strText, 2, "title", "(新疆接口机1)服务器自检")
+	strText = C_Mail_TD(strText, 2, "title", "服务器自检")
 	strText = C_Mail_TR_End(strText)
 
 	objConfigSysInfo = CConfigSysInfo()
-	L_ReadSysConf("./sys.conf", objConfigSysInfo)
+	L_ReadSysConf("../conf/sys.conf", objConfigSysInfo)
 	
 	#检测CPU
 	if(True==L_CPURote(objConfigSysInfo.m_nCpu)):
@@ -48,10 +48,10 @@ if __name__ == "__main__":
 		strText = C_Mail_TD(strText, 0, "content", "正常")
 		strText = C_Mail_TR_End(strText)	
 	#检测主要的进程
-	strText = C_Mail_TD(strText, 2, "title", "(新疆接口机1)进程检测")
+	strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")进程检测")
 	strText = C_Mail_TR_End(strText)		
 	objProcessList = CProcessList()
-	L_ReadProcessConf("./process.conf", objProcessList)
+	L_ReadProcessConf("../conf/process.conf", objProcessList)
 	 
 	for nindex in range(0, objProcessList.GetListCount()):
 		objInfo = objProcessList.GetPrecessInfo(nindex)
@@ -68,10 +68,10 @@ if __name__ == "__main__":
 			strText = C_Mail_TD(strText, 0, "content", "进程数不正常")
 			strText = C_Mail_TR_End(strText)
 	#检测日志文件	
-	strText = C_Mail_TD(strText, 2, "title", "(新疆接口机1)日志检测")
+	strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")日志检测")
 	strText = C_Mail_TR_End(strText)		
 	objLogList = CLogList()
-	L_ReadLogConf("./log.conf", objLogList)
+	L_ReadLogConf("../conf/log.conf", objLogList)
 
 	for nindex in range(0, objLogList.GetListCount()):
 		objInfo = objLogList.GetPrecessInfo(nindex)
@@ -96,10 +96,10 @@ if __name__ == "__main__":
 			strText = C_Mail_TR_End(strText)
 
 	#检测数据库
-	strText = C_Mail_TD(strText, 2, "title", "(新疆接口机1)数据库检测")
+	strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")数据库检测")
 	strText = C_Mail_TR_End(strText)
 	objOracleDBInfo = COracleDBInfo()
-	L_ReadSysConf("./DB.conf", objOracleDBInfo)
+	L_ReadDBConf("../conf/DB.conf", objOracleDBInfo)
 	
 	strDBText = L_Oracle_Online_Info(objOracleDBInfo)
 	strText = C_Mail_TR_Begin(strText)
@@ -138,5 +138,6 @@ if __name__ == "__main__":
 	strText = C_Mail_Html_End(strText)
 	
 	objMailInfo = CMailInfo()
-	L_ReadMailConf("./mail.conf", objMailInfo)
-	L_SendMail(objProcessList, "自测邮件", strText)
+	L_ReadMailConf("../conf/mail.conf", objMailInfo)
+	strMailTitle = "(" + objConfigSysInfo.m_strName + ")" + "自检邮件"
+	L_SendMail(objMailInfo, strMailTitle, strText)

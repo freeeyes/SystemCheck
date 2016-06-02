@@ -107,6 +107,7 @@ def L_ReadLogConf(strFileName, objLogList):
 #系统文件配置信息
 class CConfigSysInfo:
 	def __init__(self):
+		self.m_strName     = ""
 		self.m_nCpu        = 0
 		self.m_nFreeMemory = 0	
 
@@ -118,11 +119,13 @@ def L_ReadSysConf(strFileName, objSysInfo):
 		strdata = line.split('=')
 		strTemp  = strdata[0].strip()
 		
-		#print("strTemp=%s,value=%s" %(strTemp, strdata[1]))
+		#print("[L_ReadSysConf]strTemp=%s,value=%s" %(strTemp, strdata[1]))
 		if(strTemp == "CPU"):
 			objSysInfo.m_nCpu = int(strdata[1].strip())
 		elif(strTemp == "FreeMemory"):
 			objSysInfo.m_nFreeMemory = int(strdata[1].strip())
+		elif(strTemp == "NAME"):
+			objSysInfo.m_strName = strdata[1].strip()			
 		line = f.readline()
 		
 #数据库配置文件
@@ -135,7 +138,7 @@ class COracleDBInfo:
 		self.m_strsid      = ""
 		
 #读取数据库配置文件
-def L_ReadSysConf(strFileName, objDBInfo):
+def L_ReadDBConf(strFileName, objDBInfo):
 	f = open(strFileName)
 	line = f.readline() 
 	while line:
