@@ -10,7 +10,8 @@ def L_disk():
 	free = commands.getstatusoutput('df -h|egrep -v "tmp|var|shm"')
 	list = free[1].split('\n')
 
-	strName = ""    
+	strName = ""  
+	strText = ""
 	for disk in range(len(list)):
 		if disk < 2:
 			continue
@@ -47,7 +48,8 @@ def L_disk():
 		nFreeRote = 100 - int(sttRote[:-1])
 		
 		#显示信息内容
-		print("volName(%s), Free(%d MB), FreeRote(%d)" %(strName, nfreeDisk, nFreeRote))
+		strText = strText + "<p>volName(" + strName + "), Free(" + str(nfreeDisk) + " MB), FreeRote(" + str(nFreeRote) + "%)</p>"
+	return strText
 		
 #测试代码		
 #if __name__ == "__main__": 

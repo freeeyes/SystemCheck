@@ -8,6 +8,7 @@ from check_memory import *
 from check_disk import *
 from check_logfile import *
 from check_oracle import *
+from check_telnet import *
 from Send_mail import *
 
 #add by freeeyes
@@ -46,7 +47,24 @@ if __name__ == "__main__":
 		strText = C_Mail_TR_Begin(strText)
 		strText = C_Mail_TD(strText, 0, "title", "内存使用率(" + str(objConfigSysInfo.m_nFreeMemory) +")")
 		strText = C_Mail_TD(strText, 0, "content", "正常")
+		strText = C_Mail_TR_End(strText)
+	#检测硬盘使用率
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD(strText, 0, "title", "硬盘使用率")
+	strText = C_Mail_TD(strText, 0, "content", L_disk())	
+	strText = C_Mail_TR_End(strText)
+	#检测TCP链接
+	strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")链接检测")
+	strText = C_Mail_TR_End(strText)
+	objTcpList = CTCPList()
+	L_ReadTCPConf("../conf/telnet.conf", objTcpList)
+	for nindex in range(0, objTcpList.GetListCount()):
+		objInfo = objTcpList.GetTcpInfo(nindex)
+		strText = C_Mail_TR_Begin(strText)
+		strText = C_Mail_TD(strText, 0, "title", objInfo.m_strIP + ":" + objInfo.m_strPort)
+		strText = C_Mail_TD(strText, 0, "content", L_Telnet(objInfo.m_strIP, objInfo.m_strPort))
 		strText = C_Mail_TR_End(strText)	
+	
 	#检测主要的进程
 	strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")进程检测")
 	strText = C_Mail_TR_End(strText)		

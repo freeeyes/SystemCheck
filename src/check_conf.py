@@ -189,8 +189,44 @@ def L_ReadMailConf(strFileName, objMailInfo):
 		elif(strTemp == "PASS"):
 			objMailInfo.m_strPass     = strdata[1].strip()					
 		line = f.readline()
+		
+#检测链接端口
+#日志文件配置信息
+class CConfigTCPInfo:
+	def __init__(self):
+		self.m_strIP    = ""
+		self.m_strPort  = ""
 
+#日志配置列表信息		
+class CTCPList():
+	def __init__(self):
+		self.m_objTcpList = []
 
+	def AddItem(self, strIP, strPort):
+		objConfigTCPInfo = CConfigTCPInfo()
+		objConfigTCPInfo.m_strIP    = strIP
+		objConfigTCPInfo.m_strPort  = strPort
+		self.m_objTcpList.append(objConfigTCPInfo)
+		
+	def GetListCount(self):
+		return len(self.m_objTcpList)
+		
+	def GetTcpInfo(self, nindex):
+		if(nindex >= len(self.m_objTcpList)):
+			return None
+		else:
+			return self.m_objTcpList[nindex]			
+
+#读取进程文件
+def L_ReadTCPConf(strFileName, objTcpList):
+	f = open(strFileName)
+	line = f.readline() 
+	while line:
+		strdata = line.split('=')
+		objTcpList.AddItem(strdata[0].strip(), strdata[1].strip())
+		line = f.readline()
+		
+	f.close()			
 '''	
 #测试代码	
 if __name__ == "__main__": 
