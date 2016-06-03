@@ -130,7 +130,13 @@ if __name__ == "__main__":
 	strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
 	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
 	strText = C_Mail_TR_End(strText)
-	strDBText = L_Oracle_DeadLock_Info(objOracleDBInfo)
+	
+	for iDeadCount in range(0,5):
+		strDBText = L_Oracle_DeadLock_Info(objOracleDBInfo)
+		if(strDBText != "没有死锁"):
+			time.sleep(5)
+		else:
+			break
 	strText = C_Mail_TR_Begin(strText)
 	strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
 	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
