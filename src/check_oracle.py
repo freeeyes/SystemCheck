@@ -6,6 +6,59 @@ from check_conf import *
 
 #add by freeeyes
 
+#检查账号运行情况
+def L_Oracle_Test_User(objOracleDBInfo):
+	strText = ""
+	
+	#检测主账号
+	try:
+		dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
+		con = orcl.connect(objOracleDBInfo.m_strUserName, objOracleDBInfo.m_strPassword, dsn)
+		cursor = con.cursor()
+		strSql = "SELECT COUNT(*) FROM DUAL"
+		cursor.execute(strSql);
+	
+		result = cursor.fetchall()
+		for row in result:
+			nCount = int(row[0])
+			break
+		
+		if(nCount == 1):
+			strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")运行正常</p>"
+		else:
+			strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")SQL返回值不正确</p>"
+		cursor.close()
+		con.close()				
+	except Exception,e:
+		strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")运行异常</p>"
+	
+	#检测其他账号
+	for i in range(0, len(objOracleDBInfo.m_objTestDBInfo)):
+		try:
+			objInfo = objOracleDBInfo.m_objTestDBInfo[i]
+			nCount = 0
+			dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
+			con = orcl.connect(objInfo.m_strUserName, objInfo.m_strPassword, dsn)
+			cursor = con.cursor()
+			strSql = "SELECT COUNT(*) FROM DUAL"
+			cursor.execute(strSql);
+		
+			result = cursor.fetchall()
+			for row in result:
+				nCount = int(row[0])
+				break
+			
+			if(nCount == 1):
+				strText = strText + "<p>账号(" + objInfo.m_strUserName + ")运行正常</p>"
+			else:
+				strText = strText + "<p>账号(" + objInfo.m_strUserName + ")SQL返回值不正确</p>"
+			cursor.close()
+			con.close()				
+		except Exception,e:
+			strText = strText + "<p>账号(" + objInfo.m_strUserName + ")运行异常</p>"
+		
+	return strText
+
 #查询当前在线信息
 def L_Oracle_Online_Info(objOracleDBInfo):
 	try:

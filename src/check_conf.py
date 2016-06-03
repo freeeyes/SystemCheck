@@ -129,22 +129,32 @@ def L_ReadSysConf(strFileName, objSysInfo):
 		line = f.readline()
 		
 #数据库配置文件
-class COracleDBInfo:
+class CTestDBInfo:
 	def __init__(self):
 		self.m_strUserName = ""
 		self.m_strPassword = ""
-		self.m_strHostIP   = ""
-		self.m_strPort     = ""
-		self.m_strsid      = ""
+
+class COracleDBInfo:
+	def __init__(self):
+		self.m_strUserName   = ""
+		self.m_strPassword   = ""
+		self.m_strHostIP     = ""
+		self.m_strPort       = ""
+		self.m_strsid        = ""
+		self.m_objTestDBInfo = []
 		
 #读取数据库配置文件
 def L_ReadDBConf(strFileName, objDBInfo):
+	nTestDBCount = 0
+	strTestDBUser = ""
+	strTestDBPass = ""
+	
 	f = open(strFileName)
 	line = f.readline() 
 	while line:
 		strdata = line.split('=')
 		strTemp  = strdata[0].strip()
-		
+
 		#print("strTemp=%s,value=%s" %(strTemp, strdata[1]))
 		if(strTemp == "USERNAME"):
 			objDBInfo.m_strUserName = strdata[1].strip()
@@ -155,8 +165,32 @@ def L_ReadDBConf(strFileName, objDBInfo):
 		elif(strTemp == "PORT"):
 			objDBInfo.m_strPort     = strdata[1].strip()	
 		elif(strTemp == "SID"):
-			objDBInfo.m_strsid      = strdata[1].strip()				
+			objDBInfo.m_strsid      = strdata[1].strip()
+		elif(strTemp == "TESTDBCOUNT"):
+			#print "[L_ReadDBConf]TESTDBCOUNT=" + strTemp
+			nTestDBCount      = int(strdata[1].strip())
+		else:
+			#寻找USER
+			#print "[L_ReadDBConf]LEN=" + str(nTestDBCount)
+			for i in range(1, nTestDBCount + 1):
+				#print "[L_ReadDBConf]strTemp=" + strTemp
+				if(strTemp  == "USER" + str(i)):
+					strTestDBUser = strdata[1].strip()
+					break
+				if(strTemp  == "PASS" + str(i)):
+					strTestDBPass = strdata[1].strip()
+					objTestDBInfo = CTestDBInfo()
+					objTestDBInfo.m_strUserName = strTestDBUser
+					objTestDBInfo.m_strPassword = strTestDBPass
+					strTestDBUser = ""
+					strTestDBPass = ""
+					print "[L_ReadDBConf]m_strUserName=" + objTestDBInfo.m_strUserName + ",strTestDBPass=" + objTestDBInfo.m_strPassword
+					objDBInfo.m_objTestDBInfo.append(objTestDBInfo)
+					break
+			
 		line = f.readline()
+	
+	print "[L_ReadDBConf]self.m_objTestDBInfo=" + str(len(objDBInfo.m_objTestDBInfo))
 		
 #邮件服务器配置信息
 class CMailInfo:

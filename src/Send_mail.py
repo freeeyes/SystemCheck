@@ -42,7 +42,7 @@ def L_SendMail(objMailInfo, strTitle, strText):
 		#print objMailInfo.m_strMailHost + ":" + str(objMailInfo.m_nMailPort)
 		server = smtplib.SMTP(objMailInfo.m_strMailHost, objMailInfo.m_nMailPort)  
 
-		server.set_debuglevel(1)
+		#server.set_debuglevel(1)
 		server.ehlo()
 		#server.starttls()
 		#print objMailInfo.m_strUser + ":" + objMailInfo.m_strPass

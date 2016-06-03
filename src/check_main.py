@@ -119,6 +119,12 @@ if __name__ == "__main__":
 	objOracleDBInfo = COracleDBInfo()
 	L_ReadDBConf("../conf/DB.conf", objOracleDBInfo)
 	
+	strDBText = L_Oracle_Test_User(objOracleDBInfo)
+	strText = C_Mail_TR_Begin(strText)
+	strText = C_Mail_TD_WIDTH(strText, 0, "title", "账号检测", 20)
+	strText = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+	strText = C_Mail_TR_End(strText)	
+	
 	strDBText = L_Oracle_Online_Info(objOracleDBInfo)
 	strText = C_Mail_TR_Begin(strText)
 	strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
