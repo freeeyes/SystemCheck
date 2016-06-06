@@ -107,9 +107,14 @@ def L_ReadLogConf(strFileName, objLogList):
 #系统文件配置信息
 class CConfigSysInfo:
 	def __init__(self):
-		self.m_strName     = ""
-		self.m_nCpu        = 0
-		self.m_nFreeMemory = 0	
+		self.m_strName        = ""
+		self.m_nCpu           = 0
+		self.m_nFreeMemory    = 0	
+		self.m_nDiskFreeAlarm = 10
+		self.m_nErrSend       = 0  #0为全部状态发送，1为只发送错的
+		self.m_nOnlineRote    = 10
+		self.m_nDBDiskRote    = 10
+		self.m_nDBLinkCount   = 500
 
 #读取日志配置文件
 def L_ReadSysConf(strFileName, objSysInfo):
@@ -125,7 +130,17 @@ def L_ReadSysConf(strFileName, objSysInfo):
 		elif(strTemp == "FreeMemory"):
 			objSysInfo.m_nFreeMemory = int(strdata[1].strip())
 		elif(strTemp == "NAME"):
-			objSysInfo.m_strName = strdata[1].strip()			
+			objSysInfo.m_strName = strdata[1].strip()
+		elif(strTemp == "DiskFreeAlarm"):
+			objSysInfo.m_nDiskFreeAlarm = int(strdata[1].strip())
+		elif(strTemp == "SendError"):
+			objSysInfo.m_nErrSend = int(strdata[1].strip())		
+		elif(strTemp == "OnlineRote"):
+			objSysInfo.m_nOnlineRote = int(strdata[1].strip())		
+		elif(strTemp == "DBDiskRote"):
+			objSysInfo.m_nDBDiskRote = int(strdata[1].strip())	
+		elif(strTemp == "DBLinkCount"):
+			objSysInfo.m_nDBLinkCount = int(strdata[1].strip())				
 		line = f.readline()
 		
 #数据库配置文件

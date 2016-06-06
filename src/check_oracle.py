@@ -26,11 +26,11 @@ def L_Oracle_Test_User(objOracleDBInfo):
 		if(nCount == 1):
 			strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")运行正常</p>"
 		else:
-			strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")SQL返回值不正确</p>"
+			strText = strText + "<p>[error]账号(" + objOracleDBInfo.m_strUserName + ")SQL返回值不正确</p>"
 		cursor.close()
 		con.close()				
 	except Exception,e:
-		strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")运行异常</p>"
+		strText = strText + "<p>[error]账号(" + objOracleDBInfo.m_strUserName + ")运行异常</p>"
 	
 	#检测其他账号
 	for i in range(0, len(objOracleDBInfo.m_objTestDBInfo)):
@@ -60,7 +60,7 @@ def L_Oracle_Test_User(objOracleDBInfo):
 	return strText
 
 #查询当前在线信息
-def L_Oracle_Online_Info(objOracleDBInfo):
+def L_Oracle_Online_Info(objOracleDBInfo, nOnlineRote):
 	try:
 		strOnlineText = ""
 		strOnlineRote = ""
@@ -129,8 +129,12 @@ def L_Oracle_Online_Info(objOracleDBInfo):
 		cursor.close()
 		con.close()
 		
-		strOnlineText = "在线率:" + strOnlineRote + ",总共车辆:" + strOnlineAll + ",当前在线车辆:" + strOnline
-		print strOnlineText
+		print "[L_Oracle_Online_Info]nOnlineRote:" + str(nOnlineRote) + ",strOnlineRote:" + strOnlineRote
+		if(float(nOnlineRote) <= float(strOnlineRote)):
+			strOnlineText = "在线率:" + strOnlineRote + ",总共车辆:" + strOnlineAll + ",当前在线车辆:" + strOnline
+		else:
+			strOnlineText = "[error]在线率:" + strOnlineRote + ",总共车辆:" + strOnlineAll + ",当前在线车辆:" + strOnline
+		#print strOnlineText
 		return strOnlineText
 	except Exception,e:
 		return ""
@@ -168,7 +172,7 @@ def L_Oracle_DeadLock_Info(objOracleDBInfo):
 		return ""	
 		
 #查询表空间使用
-def L_Oracle_TableUsed_Info(objOracleDBInfo):
+def L_Oracle_TableUsed_Info(objOracleDBInfo, nDBDiskRote):
 	try:
 		strTableText = []
 		dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
@@ -176,7 +180,7 @@ def L_Oracle_TableUsed_Info(objOracleDBInfo):
 		cursor = con.cursor()
 
 		#获得死锁状态
-		strSql = "SELECT A.TABLESPACE_NAME, (B.BYTES*100)/A.BYTES \"% USED\" \
+		strSql = "SELECT A.TABLESPACE_NAME, (B.BYTES*100)/A.BYTES \
 				FROM SYS.SM$TS_AVAIL A,SYS.SM$TS_USED B,SYS.SM$TS_FREE C \
 				WHERE A.TABLESPACE_NAME=B.TABLESPACE_NAME AND A.TABLESPACE_NAME=C.TABLESPACE_NAME"		
 		
@@ -185,7 +189,11 @@ def L_Oracle_TableUsed_Info(objOracleDBInfo):
 		#print("Total: " + str(cursor.rowcount))
 
 		for row in result:
-			strTableText.append(str(row))
+			fDBDiskRote = float(row[1])
+			if(int(fDBDiskRote) >= nDBDiskRote):
+				strTableText.append("[error]" + str(row))
+			else:
+				strTableText.append(row[0] + "数据库表空间正常")
 		
 		cursor.close()
 		con.close()
@@ -205,7 +213,7 @@ def L_Oracle_User_Info(objOracleDBInfo):
 		con = orcl.connect(objOracleDBInfo.m_strUserName, objOracleDBInfo.m_strPassword, dsn)
 		cursor = con.cursor()
 
-		#获得死锁状态
+		#获得用户状态
 		strSql = "select username, account_status from dba_users"		
 		
 		cursor.execute(strSql);
@@ -214,8 +222,10 @@ def L_Oracle_User_Info(objOracleDBInfo):
 
 		for row in result:
 			if("CAR" in str(row)):
-				strUserText.append(str(row))
-		
+				if(str(row[1]) == "OPEN"):
+					strUserText.append("[" + str(row[0]) + "]账号正常")
+				else:
+					strUserText.append("[error]" + str(row))
 		cursor.close()
 		con.close()
 		
@@ -226,7 +236,7 @@ def L_Oracle_User_Info(objOracleDBInfo):
 		return ""	
 
 #查询用户账号使用
-def L_Oracle_ClientConnect_Info(objOracleDBInfo):
+def L_Oracle_ClientConnect_Info(objOracleDBInfo, nDBLinkCount):
 	try:
 		strConnectText = []
 		dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
@@ -241,7 +251,10 @@ def L_Oracle_ClientConnect_Info(objOracleDBInfo):
 		#print("Total: " + str(cursor.rowcount))
 
 		for row in result:
-			strConnectText = "当前进程连接数:" + str(row[0])
+			if(int(row[0]) >= nDBLinkCount):
+				strConnectText = "[error]当前进程连接数:" + str(row[0])
+			else:
+				strConnectText = "当前进程连接数:" + str(row[0])
 		
 		cursor.close()
 		con.close()

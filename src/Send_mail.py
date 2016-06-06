@@ -63,6 +63,7 @@ def C_Mail_CSS(strCSS):
 	strCSS = strCSS + "<head><style type=¡®text/css¡¯> \
 			.title { color: red; font-size: 15px; background-color:#D6D6D6; }\
 			.content { color: blue; font-size: 15px; background-color:#C7EDCC; }\
+			.error { color: black; font-size: 15px; background-color:yellow; }\
 			</style>\
 			</head>"
 	return strCSS

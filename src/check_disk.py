@@ -6,7 +6,7 @@ import commands
 #add by freeeyes
 
 #查看Linux硬盘空间使用情况
-def L_disk():
+def L_disk(nDiskFreeAlarm):
 	free = commands.getstatusoutput('df -h|egrep -v "tmp|var|shm"')
 	list = free[1].split('\n')
 
@@ -48,7 +48,8 @@ def L_disk():
 		nFreeRote = 100 - int(sttRote[:-1])
 		
 		#显示信息内容
-		strText = strText + "<p>volName(" + strName + "), Free(" + str(nfreeDisk) + " MB), FreeRote(" + str(nFreeRote) + "%)</p>"
+		if(nFreeRote <= nDiskFreeAlarm):
+			strText = strText + "<p>volName(" + strName + "), Free(" + str(nfreeDisk) + " MB), FreeRote(" + str(nFreeRote) + "%)</p>"
 	return strText
 		
 #测试代码		

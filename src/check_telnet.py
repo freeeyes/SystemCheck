@@ -18,7 +18,11 @@ def L_Telnet(strHostIP, strPort):
 	if(len(list) != 6):
 		strText = "链接状态不正常(" + strHostIP + ":" + strPort + ")"
 		return strText		
-	strText = "链接从(" + list[3].strip() + ")到(" + list[4].strip() + ") 状态为[" + list[5].strip() + "]" 
+		
+	if list[5].strip() == "ESTABLISHED":
+		strText = "链接从(" + list[3].strip() + ")到(" + list[4].strip() + ") 状态为[正常]" 
+	else:
+		strText = "[error]链接从(" + list[3].strip() + ")到(" + list[4].strip() + ") 状态为[" + list[5].strip() + "]" 
 	return strText
 	
 '''	
