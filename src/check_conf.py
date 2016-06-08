@@ -266,7 +266,7 @@ class CTCPList():
 		else:
 			return self.m_objTcpList[nindex]			
 
-#读取进程文件
+#读取TCP文件
 def L_ReadTCPConf(strFileName, objTcpList):
 	f = open(strFileName)
 	line = f.readline() 
@@ -276,6 +276,44 @@ def L_ReadTCPConf(strFileName, objTcpList):
 		line = f.readline()
 		
 	f.close()			
+	
+#检查消息队列
+class CQueueInfo:
+	def __init__(self):
+		self.m_strQueueID  = ""
+		self.m_nCount      = 500	
+		
+#队列配置列表信息		
+class CQueueList():
+	def __init__(self):
+		self.m_objQueueList = []
+
+	def AddItem(self, strQueueID, nCount):
+		objQueueInfo = CQueueInfo()
+		objQueueInfo.m_strQueueID = strQueueID
+		objQueueInfo.m_nCount     = nCount
+		self.m_objQueueList.append(objQueueInfo)
+		
+	def GetListCount(self):
+		return len(self.m_objQueueList)
+		
+	def GetQueueInfo(self, nindex):
+		if(nindex >= len(self.m_objQueueList)):
+			return None
+		else:
+			return self.m_objQueueList[nindex]			
+		
+#读取消息队列文件
+def L_ReadQueueConf(strFileName, objQueueList):
+	f = open(strFileName)
+	line = f.readline() 
+	while line:
+		strdata = line.split('=')
+		objQueueList.AddItem(strdata[0].strip(), int(strdata[1].strip()))
+		line = f.readline()
+	f.close()
+
+
 '''	
 #测试代码	
 if __name__ == "__main__": 

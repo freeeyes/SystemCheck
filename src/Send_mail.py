@@ -7,13 +7,16 @@ import base64
 from email.mime.text import MIMEText 
 from check_conf import * 
 
+#add by freeeyes
+
 #发送邮件
 def L_SendMail_SSL(objMailInfo, strTitle, strText):
 	#msg = MIMEText(strText, _subtype='plain', _charset='gb2312')  
+	ListSendTo = objMailInfo.m_strMailTo.split(';')
 	msg = MIMEText(strText, _subtype='html', _charset='gb2312')  
 	msg['Subject'] = strTitle 
 	msg['From']    = objMailInfo.m_strMailFrom
-	msg['To']      = objMailInfo.m_strMailTo
+	msg['To']      = ','.join(ListSendTo)
 	
 	try:  
 		server = smtplib.SMTP(objMailInfo.m_strMailHost, objMailInfo.m_nMailPort)  
@@ -22,7 +25,7 @@ def L_SendMail_SSL(objMailInfo, strTitle, strText):
 		server.ehlo()
 		server.starttls()
 		server.login(objMailInfo.m_strUser, objMailInfo.m_strPass)
-		server.sendmail(objMailInfo.m_strMailFrom, objMailInfo.m_strMailTo, msg.as_string())
+		server.sendmail(objMailInfo.m_strMailFrom, ListSendTo, msg.as_string())
 		
 		server.close()  
 		return True  
@@ -33,10 +36,12 @@ def L_SendMail_SSL(objMailInfo, strTitle, strText):
 #发送邮件
 def L_SendMail(objMailInfo, strTitle, strText):
 	#msg = MIMEText(strText, _subtype='plain', _charset='gb2312')  
+	ListSendTo = objMailInfo.m_strMailTo.split(';')
+	print ListSendTo
 	msg = MIMEText(strText, _subtype='html', _charset='gb2312')  
 	msg['Subject'] = strTitle
 	msg['From']    = objMailInfo.m_strMailFrom
-	msg['To']      = objMailInfo.m_strMailTo
+	msg['To']      = ','.join(ListSendTo)
 	
 	try:  
 		#print objMailInfo.m_strMailHost + ":" + str(objMailInfo.m_nMailPort)
@@ -50,7 +55,7 @@ def L_SendMail(objMailInfo, strTitle, strText):
 		server.esmtp_features["auth"] = "LOGIN"
 		server.login(objMailInfo.m_strUser, objMailInfo.m_strPass)
 		#print objMailInfo.m_strMailFrom + ":" + objMailInfo.m_strMailTo
-		server.sendmail(objMailInfo.m_strMailFrom, objMailInfo.m_strMailTo, msg.as_string())
+		server.sendmail(objMailInfo.m_strMailFrom, ListSendTo, msg.as_string())
 		
 		server.close()  
 		return True  
@@ -125,11 +130,10 @@ def C_Mail_TD_WIDTH(strText, nColspan, strClass, strContent, nWidth):
 		strText = strText + "<td width='" + str(nWidth) + "%' class='" + strClass + "'>" + strContent + "</td>"
 	return strText	
 			
-'''			
+'''
 #测试代码		
 if __name__ == "__main__":
 	objMailInfo = CMailInfo()
-	L_ReadMailConf("./mail.conf", objMailInfo)
-	
-	L_SendMail(objMailInfo, "自测邮件", "Test")		
-'''
+	L_ReadMailConf("../conf/mail.conf", objMailInfo)	
+	L_SendMail(objMailInfo, "自测邮件", "Test")
+'''	
