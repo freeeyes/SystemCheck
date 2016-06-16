@@ -173,8 +173,9 @@ def L_Oracle_DeadLock_Info(objOracleDBInfo):
 		
 #查询表空间使用
 def L_Oracle_TableUsed_Info(objOracleDBInfo, nDBDiskRote):
+	strTableText    = []
+	strTableContent = []
 	try:
-		strTableText = []
 		dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
 		con = orcl.connect(objOracleDBInfo.m_strUserName, objOracleDBInfo.m_strPassword, dsn)
 		cursor = con.cursor()
@@ -192,8 +193,10 @@ def L_Oracle_TableUsed_Info(objOracleDBInfo, nDBDiskRote):
 			fDBDiskRote = float(row[1])
 			if(int(fDBDiskRote) >= nDBDiskRote):
 				strTableText.append("[error]" + str(row))
+				strTableContent.append("当前表空间[" + str(row[0]) + "],使用比例:[" + str(row[1]) + "]")
 			else:
 				strTableText.append(row[0] + "数据库表空间正常")
+				strTableContent.append("当前表空间[" + str(row[0]) + "],使用比例:[" + str(row[1]) + "]")
 		
 		cursor.close()
 		con.close()
@@ -201,9 +204,9 @@ def L_Oracle_TableUsed_Info(objOracleDBInfo, nDBDiskRote):
 		#print "len(strTableText)=" + str(len(strTableText))
 		for i in range(0, len(strTableText)):
 			print strTableText[i]
-		return strTableText		
+		return strTableText,strTableContent	
 	except Exception,e:
-		return ""		
+		return strTableText,strTableContent
 		
 #查询用户账号使用
 def L_Oracle_User_Info(objOracleDBInfo):

@@ -15,9 +15,9 @@ def L_Process(strPrecessName, nCount):
 	
 	if(nCurrCount <> nCount):
 		print("[L_Process]%s CurrCount=%d,count=%d" %(strPrecessName, nCurrCount, nCount))
-		return False
+		return False,nCurrCount
 	else:
-		return True;
+		return True,nCurrCount;
 		
 #if __name__ == "__main__": 
 #	 L_Process("lkyw_service", 2)

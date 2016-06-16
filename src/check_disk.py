@@ -10,8 +10,9 @@ def L_disk(nDiskFreeAlarm):
 	free = commands.getstatusoutput('df -h|egrep -v "tmp|var|shm"')
 	list = free[1].split('\n')
 
-	strName = ""  
-	strText = ""
+	strName    = ""  
+	strText    = ""
+	strContent = ""
 	for disk in range(len(list)):
 		if disk < 2:
 			continue
@@ -50,7 +51,10 @@ def L_disk(nDiskFreeAlarm):
 		#显示信息内容
 		if(nFreeRote <= nDiskFreeAlarm):
 			strText = strText + "<p>volName(" + strName + "), Free(" + str(nfreeDisk) + " MB), FreeRote(" + str(nFreeRote) + "%)</p>"
-	return strText
+			strContent = strContent + "<p>volName(" + strName + "), Free(" + str(nfreeDisk) + " MB), FreeRote(" + str(nFreeRote) + "%)</p>"
+		else:
+			strContent = strContent + "<p>volName(" + strName + "), Free(" + str(nfreeDisk) + " MB), FreeRote(" + str(nFreeRote) + "%)</p>"
+	return strText, strContent
 		
 #测试代码		
 #if __name__ == "__main__": 

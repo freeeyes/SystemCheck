@@ -12,9 +12,9 @@ def L_CPURote(nWarningRote):
 	#print("[L_CPURote]idel=%d" %(int(strCurrIdelRote)))
 	nCurrUsedRote = 100 - int(strCurrIdelRote)
 	if(nCurrUsedRote >= nWarningRote):
-		return True
+		return True,nCurrUsedRote
 	else:
-		return False
+		return False,nCurrUsedRote
 
 #²âÊÔ´úÂë		
 #if __name__ == "__main__": 

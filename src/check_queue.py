@@ -13,11 +13,11 @@ def L_LinuxQueue(strQueueID, nCount):
 	if(len(strCurrText) == 6):
 		nCurrCount = int(strCurrText[5])
 		if(nCurrCount >= nCount):
-			return "(" + strQueueID + ")[error]队列有数据积压"
+			return "(" + strQueueID + ")[error]队列有数据积压",nCurrCount
 		else:
-			return "(" + strQueueID + ")队列正常"
+			return "(" + strQueueID + ")队列正常",nCurrCount
 	else:
-		return "(" + strQueueID + ")[error]没有找到队列信息"
+		return "(" + strQueueID + ")[error]没有找到队列信息",nCurrCount
 		
 #测试代码		
 #if __name__ == "__main__": 

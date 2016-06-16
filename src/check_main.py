@@ -25,16 +25,18 @@ if __name__ == "__main__":
 		strText = C_Mail_Body_Begin(strText)
 		strText = C_Mail_Table_Begin(strText)
 		strText = C_Mail_TR_Begin(strText)
-		strText = C_Mail_TD(strText, 2, "title", "服务器自检")
+		strText = C_Mail_TD(strText, 3, "title", "服务器自检")
 		strText = C_Mail_TR_End(strText)
 
 		objConfigSysInfo = CConfigSysInfo()
 		L_ReadSysConf("../conf/sys.conf", objConfigSysInfo)
 		
 		#检测CPU
-		if(True==L_CPURote(objConfigSysInfo.m_nCpu)):
+		blRet, nCurrCurrRote=L_CPURote(objConfigSysInfo.m_nCpu)
+		if(True==blRet):
 			strText = C_Mail_TR_Begin(strText)
 			strText = C_Mail_TD(strText, 0, "title", "CPU使用率(" + str(objConfigSysInfo.m_nCpu) +")")
+			strText = C_Mail_TD(strText, 0, "content", "CPU当前使用率(" + str(nCurrCurrRote) +")")
 			strText = C_Mail_TD(strText, 0, "error", "[error]过高")
 			strText = C_Mail_TR_End(strText)
 			nError  = nError + 1
@@ -42,13 +44,16 @@ if __name__ == "__main__":
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText  = C_Mail_TR_Begin(strText)
 				strText  = C_Mail_TD(strText, 0, "title", "CPU使用率(" + str(objConfigSysInfo.m_nCpu) +")")
+				strText  = C_Mail_TD(strText, 0, "content", "CPU当前使用率(" + str(nCurrCurrRote) +")")
 				strText  = C_Mail_TD(strText, 0, "content", "正常")
 				strText  = C_Mail_TR_End(strText)	
 				nSuccess = nSuccess + 1
 		#检测内存剩余
-		if(True==L_FreeMemory(objConfigSysInfo.m_nFreeMemory)):
+		blRet, nCurrCurrMemory=L_FreeMemory(objConfigSysInfo.m_nFreeMemory)
+		if(True==blRet):
 			strText = C_Mail_TR_Begin(strText)
 			strText = C_Mail_TD(strText, 0, "title", "内存使用率(" + str(objConfigSysInfo.m_nFreeMemory) +")")
+			strText = C_Mail_TD(strText, 0, "content", "内存当前使用(" + str(nCurrCurrMemory) +")")
 			strText = C_Mail_TD(strText, 0, "error", "[error]过高")
 			strText = C_Mail_TR_End(strText)
 			nError  = nError + 1
@@ -56,18 +61,21 @@ if __name__ == "__main__":
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText  = C_Mail_TR_Begin(strText)
 				strText  = C_Mail_TD(strText, 0, "title", "内存使用率(" + str(objConfigSysInfo.m_nFreeMemory) +")")
+				strText  = C_Mail_TD(strText, 0, "content", "内存当前使用(" + str(nCurrCurrMemory) +")")
 				strText  = C_Mail_TD(strText, 0, "content", "正常")
 				strText  = C_Mail_TR_End(strText)
 				nSuccess = nSuccess + 1
 		#检测硬盘使用率
-		strDiskText = L_disk(objConfigSysInfo.m_nDiskFreeAlarm)
+		strDiskText, strDiskContent = L_disk(objConfigSysInfo.m_nDiskFreeAlarm)
 		if(objConfigSysInfo.m_nErrSend == 0):
 			strText = C_Mail_TR_Begin(strText)
 			strText = C_Mail_TD(strText, 0, "title", "硬盘使用率(" + str(objConfigSysInfo.m_nDiskFreeAlarm) + ")")
 			if(strDiskText == ""):
+				strText  = C_Mail_TD(strText, 0, "content", strDiskContent)
 				strText  = C_Mail_TD(strText, 0, "content", "所有硬盘空间正常")
 				nSuccess = nSuccess + 1
 			else:
+				strText  = C_Mail_TD(strText, 0, "content", strDiskContent)
 				strText = C_Mail_TD(strText, 0, "error", strDiskText)
 				nError  = nError + 1
 			strText = C_Mail_TR_End(strText)
@@ -79,7 +87,7 @@ if __name__ == "__main__":
 				nError  = nError + 1
 			strText = C_Mail_TR_End(strText)		
 		#检测TCP链接
-		strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")链接检测")
+		strText = C_Mail_TD(strText, 3, "title", "(" + objConfigSysInfo.m_strName + ")链接检测")
 		strText = C_Mail_TR_End(strText)
 		objTcpList = CTCPList()
 		L_ReadTCPConf("../conf/telnet.conf", objTcpList)
@@ -92,9 +100,11 @@ if __name__ == "__main__":
 				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strIP + ":" + objInfo.m_strPort + "(" + objInfo.m_strName + ")")
 				if("error" in strTelnetText):
 					strText = C_Mail_TD(strText, 0, "error", strTelnetText)
+					strText = C_Mail_TD(strText, 0, "error", strTelnetText)
 					nError  = nError + 1
 				else:
 					strText  = C_Mail_TD(strText, 0, "content", strTelnetText)
+					strText  = C_Mail_TD(strText, 0, "content", "正常")
 					nSuccess = nSuccess + 1
 				strText = C_Mail_TR_End(strText)
 			else:
@@ -105,7 +115,7 @@ if __name__ == "__main__":
 					nError  = nError + 1			
 		
 		#检测主要的进程
-		strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")进程检测")
+		strText = C_Mail_TD(strText, 3, "title", "(" + objConfigSysInfo.m_strName + ")进程检测")
 		strText = C_Mail_TR_End(strText)		
 		objProcessList = CProcessList()
 		L_ReadProcessConf("../conf/process.conf", objProcessList)
@@ -113,17 +123,19 @@ if __name__ == "__main__":
 		for nindex in range(0, objProcessList.GetListCount()):
 			objInfo = objProcessList.GetPrecessInfo(nindex)
 			if(objConfigSysInfo.m_nErrSend == 0):
-				objRet = L_Process(objInfo.m_strProcessName, objInfo.m_nProcessCount)
+				objRet,nProcessCount = L_Process(objInfo.m_strProcessName, objInfo.m_nProcessCount)
 				if objRet == True:
 					#print("(%d)m_strProcessName=%s OK" %(nindex, objInfo.m_strProcessName))	
 					strText  = C_Mail_TR_Begin(strText)
 					strText  = C_Mail_TD(strText, 0, "title", objInfo.m_strProcessName + "(" + str(objInfo.m_nProcessCount) + ")")
+					strText  = C_Mail_TD(strText, 0, "content", "进程数(" + str(nProcessCount) + ")")
 					strText  = C_Mail_TD(strText, 0, "content", "正常")
 					strText  = C_Mail_TR_End(strText)
 					nSuccess = nSuccess + 1
 				else:
 					strText = C_Mail_TR_Begin(strText)
 					strText = C_Mail_TD(strText, 0, "title", objInfo.m_strProcessName + "(" + str(objInfo.m_nProcessCount) + ")")
+					strText = C_Mail_TD(strText, 0, "content", "进程数(" + str(nProcessCount) + ")")
 					strText = C_Mail_TD(strText, 0, "error", "进程数不正常")
 					strText = C_Mail_TR_End(strText)
 					nError  = nError + 1
@@ -132,12 +144,13 @@ if __name__ == "__main__":
 				if objRet == False:
 					strText = C_Mail_TR_Begin(strText)
 					strText = C_Mail_TD(strText, 0, "title", objInfo.m_strProcessName + "(" + str(objInfo.m_nProcessCount) + ")")
+					strText = C_Mail_TD(strText, 0, "content", "进程数(" + str(nProcessCount) + ")")
 					strText = C_Mail_TD(strText, 0, "error", "进程数不正常")
 					strText = C_Mail_TR_End(strText)
 					nError  = nError + 1
 					
 		#检测日志文件	
-		strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")日志检测")
+		strText = C_Mail_TD(strText, 3, "title", "(" + objConfigSysInfo.m_strName + ")日志检测")
 		strText = C_Mail_TR_End(strText)		
 		objLogList = CLogList()
 		L_ReadLogConf("../conf/log.conf", objLogList)
@@ -151,11 +164,13 @@ if __name__ == "__main__":
 					strText  = C_Mail_TR_Begin(strText)
 					strText  = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
 					strText  = C_Mail_TD(strText, 0, "content", "正常")
+					strText  = C_Mail_TD(strText, 0, "content", "正常")
 					strText  = C_Mail_TR_End(strText)
 					nSuccess = nSuccess + 1
 			elif objRet == 1:
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
+				strText = C_Mail_TD(strText, 0, "error", "日志中不包含指定的关键字(" + objInfo.m_strLogKey + ")")
 				strText = C_Mail_TD(strText, 0, "error", "日志中不包含指定的关键字(" + objInfo.m_strLogKey + ")")
 				strText = C_Mail_TR_End(strText)
 				nError  = nError + 1
@@ -163,21 +178,23 @@ if __name__ == "__main__":
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
 				strText = C_Mail_TD(strText, 0, "error", "日志在指定时间内没有更新(" + str(objInfo.m_nTimeInterval) + ")")
+				strText = C_Mail_TD(strText, 0, "error", "日志在指定时间内没有更新(" + str(objInfo.m_nTimeInterval) + ")")
 				strText = C_Mail_TR_End(strText)
 				nError  = nError + 1
 		
 		#检测消息队列
-		strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")消息队列")
+		strText = C_Mail_TD(strText, 3, "title", "(" + objConfigSysInfo.m_strName + ")消息队列")
 		strText = C_Mail_TR_End(strText)
 		objQueueList = CQueueList()
 		L_ReadQueueConf("../conf/queue.conf", objQueueList)
 		strQueueText = "" 
 		for nindex in range(0, objQueueList.GetListCount()):
 			objInfo = objQueueList.GetQueueInfo(nindex)
-			strQueueText = L_LinuxQueue(objInfo.m_strQueueID, objInfo.m_nCount)
+			strQueueText, nCurrQueueCount = L_LinuxQueue(objInfo.m_strQueueID, objInfo.m_nCount)
 			if("error" in strQueueText):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strQueueID + "(" + str(objInfo.m_nCount) + ")")
+				strText = C_Mail_TD(strText, 0, "content", objInfo.m_strQueueID + "当前数量(" + str(nCurrQueueCount) + ")")
 				strText = C_Mail_TD(strText, 0, "error", strQueueText)
 				strText = C_Mail_TR_End(strText)
 				nError  = nError + 1			
@@ -185,13 +202,14 @@ if __name__ == "__main__":
 				if(objConfigSysInfo.m_nErrSend == 0):
 					strText  = C_Mail_TR_Begin(strText)
 					strText  = C_Mail_TD(strText, 0, "title", objInfo.m_strQueueID + "(" + str(objInfo.m_nCount) + ")")
+					strText  = C_Mail_TD(strText, 0, "content", objInfo.m_strQueueID + "当前数量(" + str(nCurrQueueCount) + ")")
 					strText  = C_Mail_TD(strText, 0, "content", "正常")
 					strText  = C_Mail_TR_End(strText)
 					nSuccess = nSuccess + 1				
 		
 		#检测数据库
 		if(objConfigSysInfo.m_nCheckDB == 1):
-			strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")数据库检测")
+			strText = C_Mail_TD(strText, 3, "title", "(" + objConfigSysInfo.m_strName + ")数据库检测")
 			strText = C_Mail_TR_End(strText)
 			objOracleDBInfo = COracleDBInfo()
 			L_ReadDBConf("../conf/DB.conf", objOracleDBInfo)
@@ -201,17 +219,20 @@ if __name__ == "__main__":
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "账号检测", 20)
 				if("error" in strDBText):
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 				else:
-					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 40)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", "正常", 40)
 					nSuccess = nSuccess + 1
 				strText = C_Mail_TR_End(strText)
 			else:
 				if("error" in strDBText):
 					strText = C_Mail_TR_Begin(strText)
 					strText = C_Mail_TD_WIDTH(strText, 0, "title", "账号检测", 20)
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
 					nError  = nError + 1
 					strText = C_Mail_TR_End(strText)		
 					
@@ -221,21 +242,24 @@ if __name__ == "__main__":
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
 				#print "在线率:" + strDBText
 				if("error" in strDBText):
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 				else:
-					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 40)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", "正常", 40)
 					nSuccess = nSuccess + 1
 				strText = C_Mail_TR_End(strText)
 			else:
 				if("error" in strDBText):
 					strText = C_Mail_TR_Begin(strText)
 					strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 					strText = C_Mail_TR_End(strText)		
 			
-			for iDeadCount in range(0,5):
+			for iDeadCount in range(0,10):
 				strDBText = L_Oracle_DeadLock_Info(objOracleDBInfo)
 				if(strDBText != "没有死锁"):
 					time.sleep(5)
@@ -245,38 +269,47 @@ if __name__ == "__main__":
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
 				if(strDBText == "没有死锁"):
-					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 40)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", "正常", 40)
 					nSuccess = nSuccess + 1
 				else:
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 				strText = C_Mail_TR_End(strText)
 			else:
 				if(strDBText != "没有死锁"):
 					strText = C_Mail_TR_Begin(strText)
 					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 					strText = C_Mail_TR_End(strText)		
-			strDBTextList = L_Oracle_TableUsed_Info(objOracleDBInfo, objConfigSysInfo.m_nDBDiskRote)
-			strDBText = ""
+			strDBTextList, strDBContentList = L_Oracle_TableUsed_Info(objOracleDBInfo, objConfigSysInfo.m_nDBDiskRote)
+			strDBText    = ""
+			strDBContent = ""
 			for strTemp in strDBTextList:
-				strDBText = strDBText + "<p>" + strTemp + "</p>"	
+				strDBText    = strDBText + "<p>" + strTemp + "</p>"			
+			for strTemp1 in strDBContentList:	
+				strDBContent = strDBContent + "<p>" + strTemp1 + "</p>"
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
-				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间", 20)
+				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间(" + str(objConfigSysInfo.m_nDBDiskRote) + ")", 20)
 				if("error" in strDBText):
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBContent, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
 					nError  = nError + 1
 				else:
-					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBContent, 40)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 40)
 					nSuccess = nSuccess + 1
 				strText = C_Mail_TR_End(strText)
 			else:
 				if("error" in strDBText):
 					strText = C_Mail_TR_Begin(strText)
-					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间", 20)
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间(" + str(objConfigSysInfo.m_nDBDiskRote) + ")", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBContent, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
 					nError  = nError + 1
 					strText = C_Mail_TR_End(strText)		
 			strDBTextList = L_Oracle_User_Info(objOracleDBInfo)
@@ -287,35 +320,41 @@ if __name__ == "__main__":
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库用户", 20)
 				if("error" in strDBText):
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)	
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)					
 					nError  = nError + 1
 				else:
-					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)	
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "content", "正常", 40)					
 					nSuccess = nSuccess + 1
 				strText = C_Mail_TR_End(strText)
 			else:
 				if("error" in strDBText):
 					strText = C_Mail_TR_Begin(strText)
 					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库用户", 20)
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)	
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)	
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 					strText = C_Mail_TR_End(strText)		
 			strDBText = L_Oracle_ClientConnect_Info(objOracleDBInfo, objConfigSysInfo.m_nDBLinkCount)
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
-				strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数", 20)
+				strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数(" + str(objConfigSysInfo.m_nDBLinkCount) + ")", 20)
 				if("error" in strDBText):
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 				else:
-					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "content", "正常", 40)
 					nSuccess = nSuccess + 1
 				strText = C_Mail_TR_End(strText)
 			else:
 				if("error" in strDBText):
 					strText = C_Mail_TR_Begin(strText)
-					strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数", 20)
-					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数(" + str(objConfigSysInfo.m_nDBLinkCount) + ")", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 40)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", "异常", 40)
 					nError  = nError + 1
 					strText = C_Mail_TR_End(strText)		
 			
@@ -334,4 +373,4 @@ if __name__ == "__main__":
 			strMailTitle = "(" + objConfigSysInfo.m_strName + ")" + "自检邮件"
 			L_SendMail(objMailInfo, strMailTitle, strText)	
 	except Exception,e:
-		print "[main error]" + e.strerror
+		print "[main error]" + e

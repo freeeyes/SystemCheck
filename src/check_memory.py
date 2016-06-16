@@ -10,10 +10,10 @@ def L_FreeMemory(nWarningSize):
 	strCommandLine  = "free | grep 'Mem:' | awk '{print $2}'"
 	strCurrFreeMemory = os.popen(strCommandLine).read()
 	#print("[L_FreeMemory]Free memory=%d" %(int(strCurrFreeMemory)))
-	if(strCurrFreeMemory < nWarningSize):
-		return True
+	if(int(strCurrFreeMemory) < nWarningSize):
+		return True,int(strCurrFreeMemory)
 	else:
-		return False
+		return False,int(strCurrFreeMemory)
 		
 #²âÊÔ´úÂë		
 #if __name__ == "__main__": 
