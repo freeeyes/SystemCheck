@@ -112,6 +112,7 @@ class CConfigSysInfo:
 		self.m_nFreeMemory    = 0	
 		self.m_nDiskFreeAlarm = 10
 		self.m_nErrSend       = 0  #0为全部状态发送，1为只发送错的
+		self.m_nCheckDB       = 0  #0为不检测DB,1为检测DB
 		self.m_nOnlineRote    = 10
 		self.m_nDBDiskRote    = 10
 		self.m_nDBLinkCount   = 500
@@ -140,7 +141,9 @@ def L_ReadSysConf(strFileName, objSysInfo):
 		elif(strTemp == "DBDiskRote"):
 			objSysInfo.m_nDBDiskRote = int(strdata[1].strip())	
 		elif(strTemp == "DBLinkCount"):
-			objSysInfo.m_nDBLinkCount = int(strdata[1].strip())				
+			objSysInfo.m_nDBLinkCount = int(strdata[1].strip())		
+		elif(strTemp == "CheckDB"):
+			objSysInfo.m_nCheckDB = int(strdata[1].strip())		
 		line = f.readline()
 		
 #数据库配置文件

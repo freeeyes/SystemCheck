@@ -190,137 +190,138 @@ if __name__ == "__main__":
 					nSuccess = nSuccess + 1				
 		
 		#检测数据库
-		strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")数据库检测")
-		strText = C_Mail_TR_End(strText)
-		objOracleDBInfo = COracleDBInfo()
-		L_ReadDBConf("../conf/DB.conf", objOracleDBInfo)
-		
-		strDBText = L_Oracle_Test_User(objOracleDBInfo)
-		if(objConfigSysInfo.m_nErrSend == 0):
-			strText = C_Mail_TR_Begin(strText)
-			strText = C_Mail_TD_WIDTH(strText, 0, "title", "账号检测", 20)
-			if("error" in strDBText):
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-			else:
-				strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
-				nSuccess = nSuccess + 1
+		if(objConfigSysInfo.m_nCheckDB == 1):
+			strText = C_Mail_TD(strText, 2, "title", "(" + objConfigSysInfo.m_strName + ")数据库检测")
 			strText = C_Mail_TR_End(strText)
-		else:
-			if("error" in strDBText):
+			objOracleDBInfo = COracleDBInfo()
+			L_ReadDBConf("../conf/DB.conf", objOracleDBInfo)
+			
+			strDBText = L_Oracle_Test_User(objOracleDBInfo)
+			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "账号检测", 20)
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-				strText = C_Mail_TR_End(strText)		
-		
-		strDBText = L_Oracle_Online_Info(objOracleDBInfo, objConfigSysInfo.m_nOnlineRote)
-		if(objConfigSysInfo.m_nErrSend == 0):
-			strText = C_Mail_TR_Begin(strText)
-			strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
-			#print "在线率:" + strDBText
-			if("error" in strDBText):
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
+				if("error" in strDBText):
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+				else:
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					nSuccess = nSuccess + 1
+				strText = C_Mail_TR_End(strText)
 			else:
-				strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
-				nSuccess = nSuccess + 1
-			strText = C_Mail_TR_End(strText)
-		else:
-			if("error" in strDBText):
+				if("error" in strDBText):
+					strText = C_Mail_TR_Begin(strText)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "账号检测", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+					strText = C_Mail_TR_End(strText)		
+					
+			strDBText = L_Oracle_Online_Info(objOracleDBInfo, objConfigSysInfo.m_nOnlineRote)
+			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-				strText = C_Mail_TR_End(strText)		
-		
-		for iDeadCount in range(0,5):
-			strDBText = L_Oracle_DeadLock_Info(objOracleDBInfo)
-			if(strDBText != "没有死锁"):
-				time.sleep(5)
+				#print "在线率:" + strDBText
+				if("error" in strDBText):
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+				else:
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					nSuccess = nSuccess + 1
+				strText = C_Mail_TR_End(strText)
 			else:
-				break
-		if(objConfigSysInfo.m_nErrSend == 0):
-			strText = C_Mail_TR_Begin(strText)
-			strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
-			if(strDBText == "没有死锁"):
-				strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
-				nSuccess = nSuccess + 1
-			else:
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-			strText = C_Mail_TR_End(strText)
-		else:
-			if(strDBText != "没有死锁"):
+				if("error" in strDBText):
+					strText = C_Mail_TR_Begin(strText)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "车辆在线率", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+					strText = C_Mail_TR_End(strText)		
+			
+			for iDeadCount in range(0,5):
+				strDBText = L_Oracle_DeadLock_Info(objOracleDBInfo)
+				if(strDBText != "没有死锁"):
+					time.sleep(5)
+				else:
+					break
+			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-				strText = C_Mail_TR_End(strText)		
-		strDBTextList = L_Oracle_TableUsed_Info(objOracleDBInfo, objConfigSysInfo.m_nDBDiskRote)
-		strDBText = ""
-		for strTemp in strDBTextList:
-			strDBText = strDBText + "<p>" + strTemp + "</p>"	
-		if(objConfigSysInfo.m_nErrSend == 0):
-			strText = C_Mail_TR_Begin(strText)
-			strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间", 20)
-			if("error" in strDBText):
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
+				if(strDBText == "没有死锁"):
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					nSuccess = nSuccess + 1
+				else:
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+				strText = C_Mail_TR_End(strText)
 			else:
-				strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
-				nSuccess = nSuccess + 1
-			strText = C_Mail_TR_End(strText)
-		else:
-			if("error" in strDBText):
+				if(strDBText != "没有死锁"):
+					strText = C_Mail_TR_Begin(strText)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库死锁", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+					strText = C_Mail_TR_End(strText)		
+			strDBTextList = L_Oracle_TableUsed_Info(objOracleDBInfo, objConfigSysInfo.m_nDBDiskRote)
+			strDBText = ""
+			for strTemp in strDBTextList:
+				strDBText = strDBText + "<p>" + strTemp + "</p>"	
+			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间", 20)
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-				strText = C_Mail_TR_End(strText)		
-		strDBTextList = L_Oracle_User_Info(objOracleDBInfo)
-		strDBText = ""
-		for strTemp in strDBTextList:
-			strDBText = strDBText + "<p>" + strTemp + "</p>"
-		if(objConfigSysInfo.m_nErrSend == 0):
-			strText = C_Mail_TR_Begin(strText)
-			strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库用户", 20)
-			if("error" in strDBText):
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)	
-				nError  = nError + 1
+				if("error" in strDBText):
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+				else:
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					nSuccess = nSuccess + 1
+				strText = C_Mail_TR_End(strText)
 			else:
-				strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)	
-				nSuccess = nSuccess + 1
-			strText = C_Mail_TR_End(strText)
-		else:
-			if("error" in strDBText):
+				if("error" in strDBText):
+					strText = C_Mail_TR_Begin(strText)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库空间", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+					strText = C_Mail_TR_End(strText)		
+			strDBTextList = L_Oracle_User_Info(objOracleDBInfo)
+			strDBText = ""
+			for strTemp in strDBTextList:
+				strDBText = strDBText + "<p>" + strTemp + "</p>"
+			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库用户", 20)
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)	
-				nError  = nError + 1
-				strText = C_Mail_TR_End(strText)		
-		strDBText = L_Oracle_ClientConnect_Info(objOracleDBInfo, objConfigSysInfo.m_nDBLinkCount)
-		if(objConfigSysInfo.m_nErrSend == 0):
-			strText = C_Mail_TR_Begin(strText)
-			strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数", 20)
-			if("error" in strDBText):
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
+				if("error" in strDBText):
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)	
+					nError  = nError + 1
+				else:
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)	
+					nSuccess = nSuccess + 1
+				strText = C_Mail_TR_End(strText)
 			else:
-				strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
-				nSuccess = nSuccess + 1
-			strText = C_Mail_TR_End(strText)
-		else:
-			if("error" in strDBText):
+				if("error" in strDBText):
+					strText = C_Mail_TR_Begin(strText)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "数据库用户", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)	
+					nError  = nError + 1
+					strText = C_Mail_TR_End(strText)		
+			strDBText = L_Oracle_ClientConnect_Info(objOracleDBInfo, objConfigSysInfo.m_nDBLinkCount)
+			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数", 20)
-				strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
-				nError  = nError + 1
-				strText = C_Mail_TR_End(strText)		
-		
-		strText = C_Mail_Table_End(strText)
-		strText = C_Mail_Body_End(strText)
-		strText = C_Mail_Html_End(strText)
+				if("error" in strDBText):
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+				else:
+					strText  = C_Mail_TD_WIDTH(strText, 0, "content", strDBText, 80)
+					nSuccess = nSuccess + 1
+				strText = C_Mail_TR_End(strText)
+			else:
+				if("error" in strDBText):
+					strText = C_Mail_TR_Begin(strText)
+					strText = C_Mail_TD_WIDTH(strText, 0, "title", "链路连接数", 20)
+					strText = C_Mail_TD_WIDTH(strText, 0, "error", strDBText, 80)
+					nError  = nError + 1
+					strText = C_Mail_TR_End(strText)		
+			
+			strText = C_Mail_Table_End(strText)
+			strText = C_Mail_Body_End(strText)
+			strText = C_Mail_Html_End(strText)
 		
 		if(objConfigSysInfo.m_nErrSend == 1 and nError > 0):
 			objMailInfo = CMailInfo()
