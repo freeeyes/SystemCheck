@@ -89,7 +89,7 @@ if __name__ == "__main__":
 			objInfo = objTcpList.GetTcpInfo(nindex)
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)
-				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strIP + ":" + objInfo.m_strPort)
+				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strIP + ":" + objInfo.m_strPort + "(" + objInfo.m_strName + ")")
 				if("error" in strTelnetText):
 					strText = C_Mail_TD(strText, 0, "error", strTelnetText)
 					nError  = nError + 1
