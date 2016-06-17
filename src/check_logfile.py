@@ -19,6 +19,24 @@ def L_LogFile_State(strLogFileName, nTimeValue):
 	else:
 		return False
 		
+#得到固定文件时间内日志包含的信息
+def L_LogFile_No_Daily(strPath, strLogFileName, strkey, nLogLine, nTimeInterval):
+	strLogFile = strPath + strLogFileName
+	
+	if(nTimeInterval > 0):
+		if(False == L_LogFile_State(strLogFile, nTimeInterval)):
+			return 2
+
+	strCommandLine = "tail -n " + str(nLogLine) + " " + strLogFile
+	#LineList = commands.getstatusoutput(strCommandLine)
+	strLineList = os.popen(strCommandLine).read()
+	LineList = strLineList.split('\n')
+	for i in range(len(LineList)):
+		#print("[L_LogFile_Daily](%d)disk=%s" %(i, LineList[i]))
+		if(strkey in LineList[i]):
+			return 3
+	return 0	
+		
 #获得按照每天日志的最后的信息是否包含关键词
 def L_LogFile_Daily(strPath, strLogFileName, strkey, nLogLine, nTimeInterval):
 	today        = datetime.date.today()
@@ -44,7 +62,7 @@ def L_LogFile_Daily(strPath, strLogFileName, strkey, nLogLine, nTimeInterval):
 		if(False == L_LogFile_State(strLogFile, nTimeInterval)):
 			return 2
 	
-	strCommandLine = "tail -n 5 " + strLogFile
+	strCommandLine = "tail -n " + str(nLogLine) + " " + strLogFile
 	#LineList = commands.getstatusoutput(strCommandLine)
 	strLineList = os.popen(strCommandLine).read()
 	LineList = strLineList.split('\n')

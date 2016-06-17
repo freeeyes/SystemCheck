@@ -1,6 +1,7 @@
 #!/usr/env python
 # -*- coding: utf-8 -*- 
 import os, sys, string
+import traceback
 from check_process import *
 from check_conf import *
 from check_CPU import *
@@ -154,11 +155,13 @@ if __name__ == "__main__":
 		strText = C_Mail_TR_End(strText)		
 		objLogList = CLogList()
 		L_ReadLogConf("../conf/log.conf", objLogList)
-
 		for nindex in range(0, objLogList.GetListCount()):
-			objInfo = objLogList.GetPrecessInfo(nindex)
+			objInfo = objLogList.GetLogInfo(nindex)
 			print("[main]m_strLogName=%s,m_strLogKey=%s,m_nCheckLine=%d,m_nTimeInterval=%d" %(objInfo.m_strLogName, objInfo.m_strLogKey, objInfo.m_nCheckLine, objInfo.m_nTimeInterval))
-			objRet = L_LogFile_Daily(objInfo.m_strPath, objInfo.m_strLogName, objInfo.m_strLogKey, objInfo.m_nCheckLine, objInfo.m_nTimeInterval)
+			if(objInfo.m_strLogType == 1):
+				objRet = L_LogFile_Daily(objInfo.m_strPath, objInfo.m_strLogName, objInfo.m_strLogKey, objInfo.m_nCheckLine, objInfo.m_nTimeInterval)
+			else:
+				objRet = L_LogFile_No_Daily(objInfo.m_strPath, objInfo.m_strLogName, objInfo.m_strLogKey, objInfo.m_nCheckLine, objInfo.m_nTimeInterval)
 			if objRet == 0:	
 				if(objConfigSysInfo.m_nErrSend == 0):
 					strText  = C_Mail_TR_Begin(strText)
@@ -174,13 +177,20 @@ if __name__ == "__main__":
 				strText = C_Mail_TD(strText, 0, "error", "日志中不包含指定的关键字(" + objInfo.m_strLogKey + ")")
 				strText = C_Mail_TR_End(strText)
 				nError  = nError + 1
-			else:
+			elif objRet == 2:
 				strText = C_Mail_TR_Begin(strText)
 				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
 				strText = C_Mail_TD(strText, 0, "error", "日志在指定时间内没有更新(" + str(objInfo.m_nTimeInterval) + ")")
 				strText = C_Mail_TD(strText, 0, "error", "日志在指定时间内没有更新(" + str(objInfo.m_nTimeInterval) + ")")
 				strText = C_Mail_TR_End(strText)
 				nError  = nError + 1
+			elif objRet == 3:
+				strText = C_Mail_TR_Begin(strText)
+				strText = C_Mail_TD(strText, 0, "title", objInfo.m_strLogName + "(" + objInfo.m_strLogKey + ")")
+				strText = C_Mail_TD(strText, 0, "error", "日志中包含指定的关键字(" + objInfo.m_strLogKey + ")")
+				strText = C_Mail_TD(strText, 0, "error", "日志中包含指定的关键字(" + objInfo.m_strLogKey + ")")
+				strText = C_Mail_TR_End(strText)
+				nError  = nError + 1				
 		
 		#检测消息队列
 		strText = C_Mail_TD(strText, 3, "title", "(" + objConfigSysInfo.m_strName + ")消息队列")
@@ -373,4 +383,5 @@ if __name__ == "__main__":
 			strMailTitle = "(" + objConfigSysInfo.m_strName + ")" + "自检邮件"
 			L_SendMail(objMailInfo, strMailTitle, strText)	
 	except Exception,e:
-		print "[main error]" + e
+		#print "[main error]",Exception,":",e
+		print traceback.format_exc()

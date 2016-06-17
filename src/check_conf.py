@@ -33,6 +33,7 @@ class CProcessList():
 class CConfigLogInfo:
 	def __init__(self):
 		self.m_strLogName    = ""
+		self.m_strLogType    = 2   #1是自动加后缀的时间文件，2是不加时间后缀的类型
 		self.m_strLogKey     = ""
 		self.m_nTimeInterval = 0
 		self.m_nCheckLine    = 1
@@ -43,9 +44,10 @@ class CLogList():
 	def __init__(self):
 		self.m_objLogList = []
 		
-	def AddItem(self, strLogName, strKey, nTimeInterval, nCheckLine, strPath):
+	def AddItem(self, strLogName, nLogType, strKey, nTimeInterval, nCheckLine, strPath):
 		objConfigLogInfo = CConfigLogInfo()
 		objConfigLogInfo.m_strLogName    = strLogName
+		objConfigLogInfo.m_strLogType    = nLogType
 		objConfigLogInfo.m_strLogKey     = strKey
 		objConfigLogInfo.m_nTimeInterval = nTimeInterval
 		objConfigLogInfo.m_nCheckLine    = nCheckLine
@@ -55,7 +57,7 @@ class CLogList():
 	def GetListCount(self):
 		return len(self.m_objLogList)
 		
-	def GetPrecessInfo(self, nindex):
+	def GetLogInfo(self, nindex):
 		if(nindex >= len(self.m_objLogList)):
 			return None
 		else:
@@ -80,26 +82,33 @@ def L_ReadLogConf(strFileName, objLogList):
 		strdata = line.split('=')
 		strTemp  = strdata[1].strip()
 		strKey        = ""
+		nLogType      = 2
 		nTimeInterval = 0
 		nCheckLine    = 1
 		strLogPath    = ""
 		strLogInfo = strTemp.split(',')
 		if(len(strLogInfo) == 2):
 			strKey        = strLogInfo[0].strip()
-			nTimeInterval = int(strLogInfo[1].strip())
+			nLogType      = int(strLogInfo[1].strip())		
 		elif(len(strLogInfo) == 3):
 			strKey        = strLogInfo[0].strip()
-			nTimeInterval = int(strLogInfo[1].strip())	
-			nCheckLine    = int(strLogInfo[2].strip())	
+			nLogType      = int(strLogInfo[1].strip())
+			nTimeInterval = int(strLogInfo[2].strip())
 		elif(len(strLogInfo) == 4):
 			strKey        = strLogInfo[0].strip()
-			nTimeInterval = int(strLogInfo[1].strip())	
-			nCheckLine    = int(strLogInfo[2].strip())	
-			strLogPath 	  = strLogInfo[3].strip()
+			nLogType      = int(strLogInfo[1].strip())
+			nTimeInterval = int(strLogInfo[2].strip())	
+			nCheckLine    = int(strLogInfo[3].strip())	
+		elif(len(strLogInfo) == 5):
+			strKey        = strLogInfo[0].strip()
+			nLogType      = int(strLogInfo[1].strip())
+			nTimeInterval = int(strLogInfo[2].strip())	
+			nCheckLine    = int(strLogInfo[3].strip())	
+			strLogPath 	  = strLogInfo[4].strip()
 		elif(len(strLogInfo) == 0):
 			strKey        = strdata[1].strip()
 		
-		objLogList.AddItem(strdata[0].strip(), strKey, nTimeInterval, nCheckLine, strLogPath)
+		objLogList.AddItem(strdata[0].strip(), nLogType, strKey, nTimeInterval, nCheckLine, strLogPath)
 		
 		line = f.readline()  
 	f.close()
