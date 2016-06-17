@@ -50,11 +50,11 @@ if __name__ == "__main__":
 				strText  = C_Mail_TR_End(strText)	
 				nSuccess = nSuccess + 1
 		#检测内存剩余
-		blRet, nCurrCurrMemory=L_FreeMemory(objConfigSysInfo.m_nFreeMemory)
+		blRet, strMemoryText=L_FreeMemory(objConfigSysInfo.m_nFreeMemory)
 		if(True==blRet):
 			strText = C_Mail_TR_Begin(strText)
 			strText = C_Mail_TD(strText, 0, "title", "内存使用率(" + str(objConfigSysInfo.m_nFreeMemory) +")")
-			strText = C_Mail_TD(strText, 0, "content", "内存当前使用(" + str(nCurrCurrMemory) +")")
+			strText = C_Mail_TD(strText, 0, "error", strMemoryText)
 			strText = C_Mail_TD(strText, 0, "error", "[error]过高")
 			strText = C_Mail_TR_End(strText)
 			nError  = nError + 1
@@ -62,7 +62,7 @@ if __name__ == "__main__":
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText  = C_Mail_TR_Begin(strText)
 				strText  = C_Mail_TD(strText, 0, "title", "内存使用率(" + str(objConfigSysInfo.m_nFreeMemory) +")")
-				strText  = C_Mail_TD(strText, 0, "content", "内存当前使用(" + str(nCurrCurrMemory) +")")
+				strText  = C_Mail_TD(strText, 0, "content", strMemoryText)
 				strText  = C_Mail_TD(strText, 0, "content", "正常")
 				strText  = C_Mail_TR_End(strText)
 				nSuccess = nSuccess + 1
