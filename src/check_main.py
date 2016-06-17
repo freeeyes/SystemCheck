@@ -94,7 +94,11 @@ if __name__ == "__main__":
 		L_ReadTCPConf("../conf/telnet.conf", objTcpList)
 		for nindex in range(0, objTcpList.GetListCount()):
 			objInfo = objTcpList.GetTcpInfo(nindex)
-			strTelnetText = L_Telnet(objInfo.m_strIP, objInfo.m_strPort)
+			strTelnetText = ""
+			if(objInfo.m_nType == 0):
+				strTelnetText = L_Telnet(objInfo.m_strIP, objInfo.m_strPort)
+			else:
+				strTelnetText = L_Telnet_Listen(objInfo.m_strPort)
 			objInfo = objTcpList.GetTcpInfo(nindex)
 			if(objConfigSysInfo.m_nErrSend == 0):
 				strText = C_Mail_TR_Begin(strText)

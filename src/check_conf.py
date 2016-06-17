@@ -258,17 +258,20 @@ class CConfigTCPInfo:
 		self.m_strIP    = ""
 		self.m_strPort  = ""
 		self.m_strName  = ""
+		self.m_nType    = 0    #0为作为客户端，1位作为监听     
 
 #日志配置列表信息		
 class CTCPList():
 	def __init__(self):
 		self.m_objTcpList = []
 
-	def AddItem(self, strIP, strPort, strName):
+	def AddItem(self, strIP, strPort, strName, nType):
 		objConfigTCPInfo = CConfigTCPInfo()
 		objConfigTCPInfo.m_strIP    = strIP
 		objConfigTCPInfo.m_strPort  = strPort
 		objConfigTCPInfo.m_strName  = strName
+		objConfigTCPInfo.m_nType    = nType
+		
 		self.m_objTcpList.append(objConfigTCPInfo)
 		
 	def GetListCount(self):
@@ -288,7 +291,7 @@ def L_ReadTCPConf(strFileName, objTcpList):
 		strdata = line.split('=')
 		strTemp = strdata[1].strip()
 		strLogInfo = strTemp.split(',')
-		objTcpList.AddItem(strdata[0].strip(), strLogInfo[0].strip(), strLogInfo[1].strip())
+		objTcpList.AddItem(strdata[0].strip(), strLogInfo[0].strip(), strLogInfo[1].strip(), int(strLogInfo[2].strip()))
 		line = f.readline()
 		
 	f.close()			

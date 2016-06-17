@@ -24,7 +24,7 @@ def L_Oracle_Test_User(objOracleDBInfo):
 			break
 		
 		if(nCount == 1):
-			strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")运行正常</p>"
+			strText = strText + "<p>账号(" + objOracleDBInfo.m_strUserName + ")执行测试SQL返回正常</p>"
 		else:
 			strText = strText + "<p>[error]账号(" + objOracleDBInfo.m_strUserName + ")SQL返回值不正确</p>"
 		cursor.close()
@@ -49,7 +49,7 @@ def L_Oracle_Test_User(objOracleDBInfo):
 				break
 			
 			if(nCount == 1):
-				strText = strText + "<p>账号(" + objInfo.m_strUserName + ")运行正常</p>"
+				strText = strText + "<p>账号(" + objInfo.m_strUserName + ")执行测试SQL返回正常</p>"
 			else:
 				strText = strText + "<p>账号(" + objInfo.m_strUserName + ")SQL返回值不正确</p>"
 			cursor.close()
@@ -226,7 +226,7 @@ def L_Oracle_User_Info(objOracleDBInfo):
 		for row in result:
 			if("CAR" in str(row)):
 				if(str(row[1]) == "OPEN"):
-					strUserText.append("[" + str(row[0]) + "]账号正常")
+					strUserText.append("[" + str(row[0]) + "]状态为OPEN")
 				else:
 					strUserText.append("[error]" + str(row))
 		cursor.close()
