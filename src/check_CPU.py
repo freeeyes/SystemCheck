@@ -35,7 +35,7 @@ def L_CPURote_Ex(nWarningRote):
 		
 
 #≤‚ ‘¥˙¬Î		
-if __name__ == "__main__": 
+#if __name__ == "__main__": 
 #	 if(True == L_CPURote(80)):
 #		print "[L_CPURote]CPU is more"
 	#L_CPURote_Ex(10)
