@@ -35,7 +35,7 @@ def L_Telnet_Listen(strPort):
 	list = RetList[1].split()
 	print "]L_Telnet_Listen]list=" + str(len(list))
 	if(len(list) != 6):
-		strText = "监听状态不正常(" + strPort + ")"
+		strText = "[error]监听状态不正常(" + strPort + ")"
 		return strText		
 		
 	if list[5].strip() == "LISTEN":
