@@ -10,7 +10,7 @@ class CConfigProcessInfo:
 		self.m_nProcessCount  = 0
 
 #进程配置列表信息		
-class CProcessList():
+class CProcessList:
 	def __init__(self):
 		self.m_objProcessList = []
 		
@@ -40,7 +40,7 @@ class CConfigLogInfo:
 		self.m_strPath       = ""
 
 #日志配置列表信息		
-class CLogList():
+class CLogList:
 	def __init__(self):
 		self.m_objLogList = []
 		
@@ -261,7 +261,7 @@ class CConfigTCPInfo:
 		self.m_nType    = 0    #0为作为客户端，1位作为监听     
 
 #日志配置列表信息		
-class CTCPList():
+class CTCPList:
 	def __init__(self):
 		self.m_objTcpList = []
 
@@ -303,7 +303,7 @@ class CQueueInfo:
 		self.m_nCount      = 500	
 		
 #队列配置列表信息		
-class CQueueList():
+class CQueueList:
 	def __init__(self):
 		self.m_objQueueList = []
 
