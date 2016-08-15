@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- 
 import os, sys, string
 import cx_Oracle as orcl
+import traceback
 from check_conf import * 
 
 #add by freeeyes
@@ -266,6 +267,61 @@ def L_Oracle_ClientConnect_Info(objOracleDBInfo, nDBLinkCount):
 		return strConnectText		
 	except Exception,e:
 		return ""
+		
+#将统计结果写入数据库
+def L_Oracle_Save_Info(objOracleDBInfo, strServerName, strHtml):
+	try:
+		dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
+		con = orcl.connect(objOracleDBInfo.m_strUserName, objOracleDBInfo.m_strPassword, dsn)
+		cursor = con.cursor()
+		
+		strHtml = strHtml.replace("'", "''")
+		
+		#插入统计结果
+		strSql = "INSERT INTO Server_Check_Log(ID, SERVERNAME, SERVERCONTENT, COLLECTION_TIME) \
+		VALUES(SEQ_SERVER_CHECHLOG_ID.NEXTVAL,'" + strServerName + "','" + strHtml + "',sysdate)"
+		
+		#strSql = "exec Insert_Server_Check_Log('" + strServerName + "','" + strHtml + "')"
+		print strSql
+		
+		cursor.execute(strSql);
+
+		con.commit()
+		cursor.close()
+		con.close()
+		
+		return ""		
+	except Exception,e:
+		print traceback.format_exc()
+		return ""	
+		
+#读取指定日期的日志
+def L_Oracle_Load_Info(objOracleDBInfo, strServerName):
+	strRet = ""
+	try:
+		dsn = orcl.makedsn(objOracleDBInfo.m_strHostIP, objOracleDBInfo.m_strPort, objOracleDBInfo.m_strsid)
+		con = orcl.connect(objOracleDBInfo.m_strUserName, objOracleDBInfo.m_strPassword, dsn)
+		cursor = con.cursor()
+		
+		#插入统计结果
+		strSql = "select SERVERCONTENT from Server_Check_Log where to_char(COLLECTION_TIME, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') \
+				and SERVERNAME='" + strServerName + "' order by COLLECTION_TIME"
+		print strSql
+		
+		cursor.execute(strSql)
+		result = cursor.fetchall()
+		
+		for row in result:
+			strRet = strRet + str(row[0]);
+			#print "[strRet]" + strRet
+		
+		cursor.close()
+		con.close()
+		
+		return strRet		
+	except Exception,e:
+		print traceback.format_exc()
+		return strRet	
 
 '''		
 #测试代码
