@@ -22,8 +22,24 @@ if __name__ == "__main__":
 		strText = C_Mail_Body_Begin(strText)
 
 		#输出统计结果
+		#web机1
+		strDBHtml = ""
+		strText = strText + "<b>" + "新疆web机45" + "</b>"
+		strDBHtml = L_Oracle_Load_Info(objCurrDBInfo, "新疆web机45")
+		strText = strText + strDBHtml
+		
+		#web机2
+		strDBHtml = ""
+		strText = strText + "<b>" + "新疆web机46" + "</b>"
+		strDBHtml = L_Oracle_Load_Info(objCurrDBInfo, "新疆web机46")
+		strText = strText + strDBHtml
+		
+		#业务机
+		strDBHtml = ""
+		strText = strText + "<b>" + objConfigSysInfo.m_strName + "</b>"
 		strDBHtml = L_Oracle_Load_Info(objCurrDBInfo, objConfigSysInfo.m_strName)
 		strText = strText + strDBHtml
+		
 		strText = C_Mail_Body_End(strText)
 		
 		if(objConfigSysInfo.m_nErrSend == 1 and nError > 0):

@@ -305,7 +305,7 @@ def L_Oracle_Load_Info(objOracleDBInfo, strServerName):
 		
 		#插入统计结果
 		strSql = "select SERVERCONTENT from Server_Check_Log where to_char(COLLECTION_TIME, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') \
-				and SERVERNAME='" + strServerName + "' order by COLLECTION_TIME"
+				and SERVERNAME='" + strServerName + "' order by ID"
 		print strSql
 		
 		cursor.execute(strSql)
