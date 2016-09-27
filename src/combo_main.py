@@ -412,6 +412,12 @@ if __name__ == "__main__":
 			strMailTitle = "(" + objConfigSysInfo.m_strName + ")" + "自检邮件"
 			L_SendMail(objMailInfo, strMailTitle, strText)
 		'''
+		
+		#输出统计结果
+		strDBHtml = L_Oracle_Load_Info(objCurrDBInfo, objConfigSysInfo.m_strName)
+		print "*******"
+		print strDBHtml
+		print "*******"
 			
 	except Exception,e:
 		#print "[main error]",Exception,":",e

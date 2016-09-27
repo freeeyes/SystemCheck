@@ -12,12 +12,9 @@ def L_FreeMemory(nWarningSize):
 	strCurrFreeMemory = os.popen(strCommandLine).read()
 	#print("[L_FreeMemory]Free memory=%d" %(int(strCurrFreeMemory)))
 	strMenList = strCurrFreeMemory.split()
-	fMemoryUser = float(float(strMenList[2]) - float(strMenList[5]) - float(strMenList[6])/float(strMenList[1])) * float(100.0)
-	strText = "所有内存: " + strMenList[1]  
-		+ ",使用内存: " + str(int(float(float(strMenList[2]) - float(strMenList[5]) - float(strMenList[6]))) 
-		+ ",自由内存: " + str(int(float(strMenList[1]) - float(float(strMenList[2]) - float(strMenList[5]) - float(strMenList[6]))
-		+ ",使用率： " + str(fMemoryUser) +"%"
-	if(int(float(strMenList[1]) - float(float(strMenList[2]) - float(strMenList[5]) - float(strMenList[6]) < nWarningSize):
+	fMemoryUser = float(float(strMenList[2])/float(strMenList[1])) * float(100.0)
+	strText = "所有内存: " + strMenList[1]  + ",使用内存: " + strMenList[2] + ",自由内存: " + strMenList[3] + ",使用率： " + str(fMemoryUser) +"%"
+	if(int(strMenList[3]) < nWarningSize):
 		return True,strText
 	else:
 		return False,strText
