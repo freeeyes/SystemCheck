@@ -1,6 +1,7 @@
 #!/bin/env python
 # -*- coding: utf-8 -*- 
 import os, sys, string
+import time
 import json
 import urllib
 import urllib2 
@@ -12,6 +13,7 @@ sys.setdefaultencoding('utf-8')
 #Json文件信息配置
 class CConfigHTTP:
 	def __init__(self):
+		self.m_strName       = ""
 		self.m_strHttpURL    = ""
 		self.m_nHttpType     = 1   #1 get 2 post
 		self.m_strData       = ""
@@ -22,13 +24,16 @@ def L_Http_Info(strCfgFile, objHttpList):
 	try:
 		f = open(strCfgFile)
 		line = f.readline()
-		print line 
+		#print line 
 		while line:
-			d = json.loads(line)
+			strJson = line
+			#print strJson 
+			d = json.loads(strJson, encoding="GB2312")
 
 			#根据配置文件解析数据
 			bjInfo = CConfigHTTP()
 			
+			bjInfo.m_strName    = d["NAME"]
 			bjInfo.m_strHttpURL = d['URL']
 			bjInfo.m_nHttpType  = int(d['TYPE'])
 			bjInfo.m_strData    = d['SendData']
@@ -48,7 +53,7 @@ def L_Http_Info(strCfgFile, objHttpList):
 		print("<p>[error]<%d>(%s)</p>" %(s[2].tb_lineno, e))	
 		
 #发送测试数据
-def L_Http_Test(strURL, nType, strData, strRecv):
+def L_Http_Test(strName, strURL, nType, strData, strRecv):
 	try:	
 		if(nType == 2):
 			#POST
@@ -70,27 +75,28 @@ def L_Http_Test(strURL, nType, strData, strRecv):
 			if(strRecv in content):
 				return True,""
 			else:
-				strError="<" + strURL + "><" + content + ">"
+				strError="<" + strName + "><" + content + ">"
 				return False,strError					
 	except Exception,e:
 		#s=sys.exc_info()
 		#print("<p>[error]<%d>(%s)</p>" %(s[2].tb_lineno, e))
-		strError="<" + strURL + "><" + str(e) + ">"
+		strError="<" + strName + ">[error]<" + str(e) + ">"
 		return False,strError		
 			
 		
 #按照数组组合发送数据
 def L_Http_List(objHttpList, objMailText):
 	for nindex in range(0, len(objHttpList)):
-		blret,strDtata = L_Http_Test(objHttpList[nindex].m_strHttpURL, 
+		blret,strDtata = L_Http_Test(objHttpList[nindex].m_strName,
+																 objHttpList[nindex].m_strHttpURL, 
 																 objHttpList[nindex].m_nHttpType, 
 																 objHttpList[nindex].m_strData, 
 																 objHttpList[nindex].m_strReturn)
 		if(blret == False):
-			print("<p>%s</p>" %(strDtata))
+			print("<p>[%s]%s</p>" %(time.strftime('%Y-%m-%d %X', time.localtime()), strDtata))
 			objMailText.append(strDtata)
 		else:
-			print("<%s>OK" %(objHttpList[nindex].m_strHttpURL))
+			print("[%s]<%s>OK" %(time.strftime('%Y-%m-%d %X', time.localtime()), objHttpList[nindex].m_strName))
 			
 	if(len(objMailText) > 0):
 		strText = ""
