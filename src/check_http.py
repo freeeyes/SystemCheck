@@ -65,7 +65,7 @@ def L_Http_Test(strName, strURL, nType, strData, strRecv):
 			if(strRecv in content):
 				return True,""
 			else:
-				strError="<" + strURL + "><" + content + ">"
+				strError="<" + strName + "><" + content + ">"
 				return False,strError	
 		else:
 			#GET
@@ -93,7 +93,8 @@ def L_Http_List(objHttpList, objMailText):
 																 objHttpList[nindex].m_strData, 
 																 objHttpList[nindex].m_strReturn)
 		if(blret == False):
-			print("<p>[%s]%s</p>" %(time.strftime('%Y-%m-%d %X', time.localtime()), strDtata))
+			#print("<p>[%s]%s</p>" %(time.strftime('%Y-%m-%d %X', time.localtime()), objHttpList[nindex].m_strName))
+			#print("%s" %(strDtata))
 			objMailText.append(strDtata)
 		else:
 			print("[%s]<%s>OK" %(time.strftime('%Y-%m-%d %X', time.localtime()), objHttpList[nindex].m_strName))
@@ -101,11 +102,13 @@ def L_Http_List(objHttpList, objMailText):
 	if(len(objMailText) > 0):
 		strText = ""
 		for i in range(0, len(objMailText)):
+			print("%s" %(objMailText[i])) 
 			strText += objMailText[i]
 		
 		#发送告警邮件
+		objMailInfo = CMailInfo()
 		L_ReadMailConf("../conf/mail.conf", objMailInfo)
-		strMailTitle = "(" + objConfigSysInfo.m_strName + ")" + "自检邮件"
+		strMailTitle = "(人员HTTP)自检邮件"
 		L_SendMail(objMailInfo, strMailTitle, strText)	
 		
 #测试代码	
