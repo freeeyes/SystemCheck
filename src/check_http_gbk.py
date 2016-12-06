@@ -79,8 +79,8 @@ def L_Http_Test(strName, strURL, nType, strData, strRecv):
 				strError="<" + strName + "><" + content + ">"
 				return False,strError					
 	except Exception,e:
-		s=sys.exc_info()
-		print("<p>[error]<%d>(%s)</p>" %(s[2].tb_lineno, e))
+		#s=sys.exc_info()
+		#print("<p>[error]<%d>(%s)</p>" %(s[2].tb_lineno, e))
 		strError="<" + strName + ">[error]<" + str(e) + ">"
 		return False,strError		
 			
@@ -103,7 +103,7 @@ def L_Http_List(objHttpList, objMailText):
 	if(len(objMailText) > 0):
 		strText = ""
 		for i in range(0, len(objMailText)):
-			print("%s" %(objMailText[i])) 
+			print("[%s]%s" %(time.strftime('%Y-%m-%d %X', time.localtime()), objMailText[i])) 
 			strText += objMailText[i]
 		
 		#·¢ËÍ¸æ¾¯ÓÊ¼þ
