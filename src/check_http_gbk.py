@@ -104,7 +104,7 @@ def L_Http_List(objHttpList, objMailText):
 		strText = ""
 		for i in range(0, len(objMailText)):
 			print("[%s]%s" %(time.strftime('%Y-%m-%d %X', time.localtime()), objMailText[i])) 
-			strText += objMailText[i]
+			strText += "[" + time.strftime('%Y-%m-%d %X', time.localtime()) + "]" + objMailText[i] + "<br>"
 		
 		#·¢ËÍ¸æ¾¯ÓÊ¼þ
 		objMailInfo = CMailInfo()
